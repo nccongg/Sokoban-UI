@@ -23,7 +23,7 @@ def create_successors(grid, grid_cost, steps):
     rows, cols = len(grid), len(grid[0])
     ares_pos = None
     
-    for r in range(rows):
+    for r in range(len(grid)):
         for c in range(len(grid[r])):
             if grid[r][c] == '@' or grid[r][c] == '+':
                 ares_pos = (r, c)
@@ -33,11 +33,12 @@ def create_successors(grid, grid_cost, steps):
     
     directions = [(-1, 0, 'u', 'U'), (1, 0, 'd', 'D'), (0, -1, 'l', 'L'), (0, 1, 'r', 'R')]
 
-
+    # print(ares_pos)
     for dx, dy, move_action, push_action in directions:
         nx, ny = ares_pos[0] + dx, ares_pos[1] + dy
-
+        cols = len(grid[nx])
         if 0 < nx < rows - 1 and 0 < ny < cols - 1:
+            
             if grid[nx][ny] == ' ':
                 new_grid = [list(row) for row in grid]  
                 # new_grid[ares_pos[0]][ares_pos[1]] = ' '
@@ -45,7 +46,6 @@ def create_successors(grid, grid_cost, steps):
                 new_grid[nx][ny] = '@'                
                 # successors.append((''.join(''.join(row) for row in new_grid),grid_cost, 0, steps + 1))  # (trạng thái, chi phí)
                 successors.append((new_grid, grid_cost, 0, steps + 1, move_action))  # (trạng thái, chi phí)
-
                 
             elif grid[nx][ny] == '$':
                 if grid[nx + dx][ny + dy] != ' ' and grid[nx + dx][ny + dy] != '.':
@@ -133,18 +133,21 @@ def create_successors(grid, grid_cost, steps):
 
 
 def calculate_grid_cost(grid, stone_weights):
-    rows, cols = len(grid), len(grid[0])
-    grid_cost = [[0] * cols for _ in range(rows)]
-    
+    grid_cost = []
     weight_index = 0
-    
-    for r in range(rows):
-        for c in range(cols):
+
+    for r in range(len(grid)):
+        row_cost = []
+        for c in range(len(grid[r])):
             if grid[r][c] == '$' or grid[r][c] == '*':
-                grid_cost[r][c] = stone_weights[weight_index]
+                row_cost.append(stone_weights[weight_index])
                 weight_index += 1
+            else:
+                row_cost.append(0)
+        grid_cost.append(row_cost)
                     
     return grid_cost
+
      
 def get_memory_usage():
     process = psutil.Process(os.getpid())

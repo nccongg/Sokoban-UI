@@ -1,1 +1,3 @@
-No solution found.
+UCS
+Steps: 29, Weight: 811, Node: 70993, Time (ms): 1388.93, Memory (MB): 101.54
+uulDldRRRRRRRRRRlllllluLLLulD
