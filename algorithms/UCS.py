@@ -24,7 +24,7 @@ def create_successors(grid, grid_cost, steps):
     ares_pos = None
     
     for r in range(rows):
-        for c in range(cols):
+        for c in range(len(grid[r])):
             if grid[r][c] == '@' or grid[r][c] == '+':
                 ares_pos = (r, c)
                 break
@@ -221,8 +221,8 @@ def write_output(filename, algorithm_name, steps, total_weight, nodes_generated,
 
 if __name__ == "__main__":
 
-    input_filename = 'input-01.txt'
-    output_filename = 'output-01.txt'
+    input_filename = 'algorithms/input.txt'
+    output_filename = 'algorithms/output.txt'
 
     stone_weights, grid = read_input(input_filename)
 
