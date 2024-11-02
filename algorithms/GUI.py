@@ -6,7 +6,7 @@ pygame.init()
 screen_width, screen_height = 1280, 720
 FPS = 2  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
 cell_size = 50 # Kích thước của mỗi ô trong lưới
-rows, cols = 10, 10
+# rows, cols = 10, 10
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ares Movement Simulation")
@@ -37,8 +37,7 @@ for key in images:
 
 
 
-start_x = (screen_width - cols * cell_size) // 2
-start_y = (screen_height - rows * cell_size) // 2
+
 
 class Game:
     def __init__(self, grid, solution):
@@ -49,7 +48,7 @@ class Game:
         self.cell_size = cell_size
         self.ares_pos = self.find_ares_position()
         self.clock = pygame.time.Clock()
-
+        
     def find_ares_position(self):
         """Tìm vị trí bắt đầu của Ares."""
         for r in range(self.rows):
@@ -71,13 +70,20 @@ class Game:
 
     def draw_grid(self):
         """Vẽ lưới dựa trên `self.grid` bằng hình ảnh tương ứng."""
+        # for row in self.grid:
+        #     print(row)
         screen.fill((255, 255, 255))  # Làm trắng màn hình
+        max_width = max(len(row) for row in self.grid)
+        start_x = (screen_width - max_width * self.cell_size) // 2  # Căn giữa theo chiều ngang
+        start_y = (screen_height - self.rows * self.cell_size) // 2  # Căn giữa theo chiều dọc
+
         for r in range(self.rows):
             for c in range(len(self.grid[r])):
                 cell_value = self.grid[r][c]
-                x = c * self.cell_size + (1280 - len(self.grid[r]) * self.cell_size) // 2  # Căn giữa theo chiều ngang
-                y = r * self.cell_size + (720 - len(self.grid) * self.cell_size) // 2    # Căn giữa theo chiều dọc
-            
+                # x = c * self.cell_size + (1280 - len(self.grid[r]) * self.cell_size) // 2  # Căn giữa theo chiều ngang
+                # y = r * self.cell_size + (720 - len(self.grid) * self.cell_size) // 2    # Căn giữa theo chiều dọc
+                x = start_x + c * self.cell_size 
+                y = start_y + r * self.cell_size
                 # Lấy hình ảnh tương ứng và vẽ nó
                 if cell_value in images:
                     screen.blit(images[cell_value], (x, y))
@@ -100,7 +106,7 @@ class Game:
                 self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
                 self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == "$" else "+"
                 self.grid[stone_r][stone_c] = "$" if self.grid[stone_r][stone_c] == " " else "*"
-                self.ares_pos = (new_r, new_c)
+                self.ares_pos = (new_r, new_c)  
 
     def run(self):
         """Chạy vòng lặp chính để xử lý từng bước di chuyển trong solution."""
@@ -165,5 +171,6 @@ if __name__ == "__main__":
 
     stone_weights, grid = read_input(input_filename)
     solution = read_output(output_filename)
+    
     game = Game(grid, solution)
     game.run()
