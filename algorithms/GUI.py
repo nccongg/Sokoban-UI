@@ -163,12 +163,7 @@ class Game:
                 pygame.display.flip()
                 self.clock.tick(FPS)  # Điều chỉnh tốc độ di chuyển
             else:
-            #     running = False  # Kết thúc khi hoàn thành các bước di chuyển
-                if step == len(self.solution):
-                    self.PLAY_BUTTON.changeText("Again")
-                self.draw_grid()
-                pygame.display.flip()
-
+                running = False  # Kết thúc khi hoàn thành các bước di chuyển
         pygame.quit()
 
 
@@ -203,6 +198,7 @@ if __name__ == "__main__":
 
     stone_weights, grid = read_input(input_filename)
     solution = read_output(output_filename)
+    print(solution)
     
     game = Game(grid, solution)
     game.run()
