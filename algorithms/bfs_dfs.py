@@ -2,6 +2,7 @@ import time
 from collections import deque
 import numpy as np
 import sys
+import tracemalloc  # Import tracemalloc for memory tracking
 
 # Utility Functions
 
@@ -34,6 +35,7 @@ def can_move(state, shape, player_pos, move):
     # Check bounds for target position
     if not (0 <= target[0] < height and 0 <= target[1] < width):
         return None
+
     target1d = target[0] * width + target[1]
     target_cell = state[target1d]
 
@@ -49,7 +51,7 @@ def can_move(state, shape, player_pos, move):
         new_state[curr1d] = '.' if player_on_goal else ' '
         # Update target position
         new_state[target1d] = '+' if target_cell == '.' else '@'
-        return ''.join(new_state), target
+        return ''.join(new_state), target, False  # False indicates no push
     # If target is a box
     elif target_cell in '$*':
         # Check bounds for box target position
@@ -70,7 +72,7 @@ def can_move(state, shape, player_pos, move):
         new_state[target1d] = '+' if target_cell == '*' else '@' if target_cell == '$' else ' '
         # Update player current position
         new_state[curr1d] = '.' if player_on_goal else ' '
-        return ''.join(new_state), target
+        return ''.join(new_state), target, True  # True indicates a push
     else:
         return None
 
@@ -81,6 +83,7 @@ def bfs(matrix, player_pos):
     shape = matrix.shape
     seen = {initial_state}
     q = deque([(initial_state, player_pos, 0, '')])
+    nodes_explored = 0  # Initialize node counter
     moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
     direction = {
         (-1, 0): 'U',  # Up
@@ -91,19 +94,22 @@ def bfs(matrix, player_pos):
     height, width = shape
     while q:
         state, pos, depth, path = q.popleft()
+        nodes_explored += 1  # Increment node counter
         for move in moves:
             result = can_move(state, shape, pos, move)
             if result is None:
                 continue
-            new_state, new_pos = result
+            new_state, new_pos, pushed = result
             if new_state in seen:
                 continue
             seen.add(new_state)
-            new_path = path + direction[move]
+            # Append uppercase if pushed, else lowercase
+            move_char = direction[move].upper() if pushed else direction[move].lower()
+            new_path = path + move_char
             if is_solved(new_state):
-                return new_path, depth + 1
+                return new_path, depth + 1, nodes_explored
             q.append((new_state, new_pos, depth + 1, new_path))
-    return None, -1
+    return None, -1, nodes_explored
 
 # DFS Algorithm
 
@@ -112,6 +118,7 @@ def dfs(matrix, player_pos):
     shape = matrix.shape
     seen = {initial_state}
     stack = [(initial_state, player_pos, 0, '')]
+    nodes_explored = 0  # Initialize node counter
     moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
     direction = {
         (-1, 0): 'U',  # Up
@@ -122,26 +129,29 @@ def dfs(matrix, player_pos):
     height, width = shape
     while stack:
         state, pos, depth, path = stack.pop()
+        nodes_explored += 1  # Increment node counter
         for move in moves:
             result = can_move(state, shape, pos, move)
             if result is None:
                 continue
-            new_state, new_pos = result
+            new_state, new_pos, pushed = result
             if new_state in seen:
                 continue
             seen.add(new_state)
-            new_path = path + direction[move]
+            # Append uppercase if pushed, else lowercase
+            move_char = direction[move].upper() if pushed else direction[move].lower()
+            new_path = path + move_char
             if is_solved(new_state):
-                return new_path, depth + 1
+                return new_path, depth + 1, nodes_explored
             stack.append((new_state, new_pos, depth + 1, new_path))
-    return None, -1
+    return None, -1, nodes_explored
 
 def solve_algorithm(puzzle, algorithm='bfs'):
     matrix = puzzle
     where = np.where((matrix == '@') | (matrix == '+'))
     if len(where[0]) == 0:
         print("No player found in the puzzle.")
-        return None, -1
+        return None, -1, 0
     player_pos = where[0][0], where[1][0]
     if algorithm == 'bfs':
         return bfs(matrix, player_pos)
@@ -149,8 +159,8 @@ def solve_algorithm(puzzle, algorithm='bfs'):
         return dfs(matrix, player_pos)
     else:
         print(f"Unknown algorithm: {algorithm}")
-        return None, -1
-    
+        return None, -1, 0
+
 def read_input_file(filename):
     with open(filename, 'r') as file:
         first_line = file.readline().strip()
@@ -159,7 +169,6 @@ def read_input_file(filename):
         grid = []
         for line in file:
             grid.append(list(line)[:-1] if line[-1] == '\n' else list(line))
-        
 
         max_length = max(len(row) for row in grid)
 
@@ -178,10 +187,19 @@ if __name__ == '__main__':
     # Convert level to numpy array
     matrix = np.array(level)
     algorithm = sys.argv[2]
+
+    # Start tracing memory allocations
+    tracemalloc.start()
+
     # Solve the puzzle using the specified algorithm
     start_time = time.time()
-    solution, depth = solve_algorithm(matrix, algorithm)
+    solution, depth, nodes_explored = solve_algorithm(matrix, algorithm)
     end_time = time.time()
+
+    # Get memory usage
+    current, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
     with open('output.txt', 'w') as f:
         if algorithm == 'bfs':
             f.write('Breadth-First Search\n')
@@ -191,8 +209,7 @@ if __name__ == '__main__':
             f.write(f'{algorithm} is not a valid algorithm.\n')
             sys.exit(1)
         if solution:
-            f.write(f'Solution found in {depth} moves\n')
-            f.write(f'Move sequence: {solution}')
+            f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}, Time (ms): {(end_time - start_time) * 1000 :.2f}, Memory (MB): {peak / (1024 * 1024):.4f}\n')
+            f.write(f'{solution}\n')
         else:
-            f.write("No solution found.")
-        f.write(f'\nRuntime: {end_time - start_time:.4f} seconds')
+            f.write("No solution found.\n")
