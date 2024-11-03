@@ -1,26 +1,27 @@
+
+### import thư viện
 import pygame
 import time
 import os
-# Khởi tạo pygame và đặt kích thước màn hình
+import pygame, sys, threading
+# Thêm thư mục gốc vào PYTHONPATH
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from components import Button
+
+###
+
+### Khởi tạo 
+
 pygame.init()
 screen_width, screen_height = 1280, 720
 FPS = 2  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
 cell_size = 50 # Kích thước của mỗi ô trong lưới
-# rows, cols = 10, 10
-
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ares Movement Simulation")
 
-# Màu sắc cho các loại ô
-COLORS = {
-    "#": (0, 0, 0),         # Tường - đen
-    " ": (255, 255, 255),   # Ô trống - trắng
-    "$": (139, 69, 19),     # Đá - nâu
-    "*": (0, 128, 0),       # Đá trên công tắc - xanh lá
-    "@": (0, 0, 255),       # Ares - xanh dương
-    ".": (255, 165, 0),     # Công tắc - cam
-    "+": (0, 255, 255)      # Ares trên công tắc - xanh ngọc
-}
+def get_font(size):
+    # Trả về một đối tượng font với kích thước đã chỉ định
+    return pygame.font.Font(None, size) 
 
 images = {
     '#': pygame.image.load('img/wall.png'),
@@ -34,13 +35,14 @@ images = {
 for key in images:
     images[key] = pygame.transform.scale(images[key], (cell_size, cell_size))
 
-
+###
 
 
 
 
 class Game:
     def __init__(self, grid, solution):
+        self.init_grid = [list(row) for row in grid]
         self.grid = [list(row) for row in grid]
         self.solution = solution
         self.rows = len(self.grid)
@@ -48,6 +50,22 @@ class Game:
         self.cell_size = cell_size
         self.ares_pos = self.find_ares_position()
         self.clock = pygame.time.Clock()
+        # Khởi tạo nút
+        self.PLAY_BUTTON = Button(image=pygame.image.load("img/Play Rect.png"), pos=((screen_width) // 2, 600), 
+                                   text_input="Pause", font=get_font(30), 
+                                   base_color="cyan", hovering_color="hotpink")
+        self.buttons = [
+            Button(image=pygame.image.load("img/Play Rect.png"), pos=(200, 200),
+                text_input="BFS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
+            Button(image=pygame.image.load("img/Play Rect.png"), pos=(200, 300),
+                text_input="DFS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
+            Button(image=pygame.image.load("img/Play Rect.png"), pos=(200, 400),
+                text_input="UCS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
+            Button(image=pygame.image.load("img/Play Rect.png"), pos=(200, 500),
+                text_input="A*", font=get_font(30), base_color="cyan", hovering_color="hotpink")
+]
+        
+        
         
     def find_ares_position(self):
         """Tìm vị trí bắt đầu của Ares."""
@@ -57,37 +75,36 @@ class Game:
                     return (r, c)
         return None
 
-    # def draw_grid(self):
-    #     """Vẽ lưới dựa trên `self.grid`."""
-    #     screen.fill((255, 255, 255))  # Làm trắng màn hình
-    #     for r in range(self.rows):
-    #         for c in range(len(self.grid[r])):
-    #             cell_value = self.grid[r][c]
-    #             color = COLORS.get(cell_value, (255, 255, 255))
-    #             x, y = c * self.cell_size, r * self.cell_size
-    #             pygame.draw.rect(screen, color, (start_x + x, start_y + y, self.cell_size, self.cell_size))
-    #             pygame.draw.rect(screen, (128, 128, 128), (start_x + x, start_y + y, self.cell_size, self.cell_size), 1)
+    def draw_buttons(self, screen, mouse_pos): # vẽ buttons
+        for button in self.buttons:
+            button.changeColor(mouse_pos)
+            button.update(screen)
 
     def draw_grid(self):
-        """Vẽ lưới dựa trên `self.grid` bằng hình ảnh tương ứng."""
-        # for row in self.grid:
-        #     print(row)
-        screen.fill((255, 255, 255))  # Làm trắng màn hình
+        screen.fill((0, 0, 0))  # Làm trắng màn hình
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+
         max_width = max(len(row) for row in self.grid)
         start_x = (screen_width - max_width * self.cell_size) // 2  # Căn giữa theo chiều ngang
         start_y = (screen_height - self.rows * self.cell_size) // 2  # Căn giữa theo chiều dọc
-
         for r in range(self.rows):
-            for c in range(len(self.grid[r])):
-                cell_value = self.grid[r][c]
-                # x = c * self.cell_size + (1280 - len(self.grid[r]) * self.cell_size) // 2  # Căn giữa theo chiều ngang
-                # y = r * self.cell_size + (720 - len(self.grid) * self.cell_size) // 2    # Căn giữa theo chiều dọc
+            for c in range(max_width):
+                col = len(self.grid[r])
                 x = start_x + c * self.cell_size 
                 y = start_y + r * self.cell_size
-                # Lấy hình ảnh tương ứng và vẽ nó
-                if cell_value in images:
-                    screen.blit(images[cell_value], (x, y))
+                if c >= col:
+                    screen.blit(images[' '], (x, y))
+                else:
+                    cell_value = self.grid[r][c]
+                    # Lấy hình ảnh tương ứng và vẽ nó
+                    if cell_value in images:
+                        screen.blit(images[cell_value], (x, y))
+        self.draw_buttons(screen, PLAY_MOUSE_POS)
+        self.PLAY_BUTTON.changeColor(PLAY_MOUSE_POS)
+        self.PLAY_BUTTON.update(screen)
 
+
+    
 
     def move_ares(self, direction):
         """Di chuyển hoặc đẩy đá dựa trên hướng."""
@@ -113,20 +130,44 @@ class Game:
         running = True
         step = 0
         
+        moving = 1
+
         while running:
+            
+
+            PLAY_MOUSE_POS = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.PLAY_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                        if step == len(self.solution):
+                            step = 0
+                            moving = 1
+                            self.grid = self.init_grid
+                            self.ares_pos = self.find_ares_position()
+                        else:
+                            moving = (moving + 1) % 2
+                        if moving == 1:
+                            self.PLAY_BUTTON.changeText("Pause")
+                        else:
+                            self.PLAY_BUTTON.changeText("Continue")
+
+
             # Vẽ lưới và di chuyển Ares theo các bước trong solution
-            if step < len(self.solution):
+            if moving and step < len(self.solution):
                 self.draw_grid()
                 self.move_ares(self.solution[step])
-                step += 1
+                step += moving
                 pygame.display.flip()
                 self.clock.tick(FPS)  # Điều chỉnh tốc độ di chuyển
             else:
-                running = False  # Kết thúc khi hoàn thành các bước di chuyển
+            #     running = False  # Kết thúc khi hoàn thành các bước di chuyển
+                if step == len(self.solution):
+                    self.PLAY_BUTTON.changeText("Again")
+                self.draw_grid()
+                pygame.display.flip()
 
         pygame.quit()
 
@@ -145,26 +186,17 @@ def read_input(filename):
 def read_output(filename):
     with open(filename, 'r') as f:
         lines = f.readlines()
-        algorithm = lines[0].strip()  # Dòng đầu tiên là tên thuật toán
+        algorithm = lines[0].strip()  
         
-        # Dòng thứ hai chứa các thông số
         steps, weight, node, time_ms, memory_mb = map(lambda x: float(x.split(": ")[1]) if '.' in x else int(x.split(": ")[1]), lines[1].strip().split(", "))
         
-        # Dòng thứ ba là chuỗi giải pháp
         solution = lines[2].strip()
         return solution
 
 
 # Đầu vào mẫu
 if __name__ == "__main__":
-    # grid = [
-    #     "#######",
-    #     "#     #",
-    #     "# .$. #",
-    #     "#  @  #",
-    #     "#######"
-    # ]
-    # solution = "drruLUlDR"  # Chuỗi mô phỏng chuyển động của Ares
+   
 
     input_filename = 'algorithms/input.txt'
     output_filename = 'algorithms/output.txt'
