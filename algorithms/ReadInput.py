@@ -5,7 +5,8 @@ def read_input_file(filename):
 
         grid = []
         for line in file:
-            grid.append(list(line.strip()))
+            grid.append(list(line)[:-1] if line[-1] == '\n' else list(line))
+        
 
         max_length = max(len(row) for row in grid)
 
