@@ -1,7 +1,6 @@
 import time
 from collections import deque
 import numpy as np
-from ReadInput import read_input_file
 import sys
 
 # Utility Functions
@@ -151,6 +150,23 @@ def solve_algorithm(puzzle, algorithm='bfs'):
     else:
         print(f"Unknown algorithm: {algorithm}")
         return None, -1
+    
+def read_input_file(filename):
+    with open(filename, 'r') as file:
+        first_line = file.readline().strip()
+        numbers = list(map(int, first_line.split()))
+
+        grid = []
+        for line in file:
+            grid.append(list(line)[:-1] if line[-1] == '\n' else list(line))
+        
+
+        max_length = max(len(row) for row in grid)
+
+        for row in grid:
+            row.extend([' '] * (max_length - len(row)))
+
+    return numbers, grid
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -159,7 +175,6 @@ if __name__ == '__main__':
         sys.exit(1)
         
     _, level = read_input_file(sys.argv[1])
-
     # Convert level to numpy array
     matrix = np.array(level)
     algorithm = sys.argv[2]

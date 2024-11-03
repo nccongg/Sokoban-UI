@@ -1,3 +1,0 @@
-Breadth-First Search
-No solution found.
-Runtime: 0.0000 seconds
