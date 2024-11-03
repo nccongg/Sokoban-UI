@@ -127,7 +127,6 @@ class Game:
                 self.clock.tick(FPS)  # Điều chỉnh tốc độ di chuyển
             else:
                 running = False  # Kết thúc khi hoàn thành các bước di chuyển
-
         pygame.quit()
 
 
@@ -171,6 +170,7 @@ if __name__ == "__main__":
 
     stone_weights, grid = read_input(input_filename)
     solution = read_output(output_filename)
+    print(solution)
     
     game = Game(grid, solution)
     game.run()

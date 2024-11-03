@@ -1,3 +1,3 @@
 Breadth-First Search
-Steps: 51, Weight: 0, Node: 183742, Time (ms): 2893.96, Memory (MB): 37.8042
-dddrrrrrrRRurrdLLLLLLLLLdlUUUddrrrrrrrruuurDDrdLLdR
+Steps: 97, Weight: 0, Node: 4101, Time (ms): 55.98, Memory (MB): 0.7204
+llDDDDDDldddrruuLuuuuuuurrdLulDDDDDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU
