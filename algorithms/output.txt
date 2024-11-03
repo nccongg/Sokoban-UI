@@ -1,3 +1,3 @@
-A*
-Steps: 55, Weight: 1514, Node: 180840, Time (ms): 3577.89, Memory (MB): 137.36
-dddrrrrrrRRRuruLulDDrdLLLLLLLLdlUUUddrrrrrrrrurrrdLLLdR
+Breadth-First Search
+No solution found.
+Runtime: 0.0000 seconds
