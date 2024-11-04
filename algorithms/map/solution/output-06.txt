@@ -1,0 +1,15 @@
+A*
+Steps: 60, Weight: 19, Node: 1235621, Time (ms): 61161.77, Memory (MB): 2065.55
+lUUlllluRRlluRRlluurDurDlDldRdrrrddrruLruLLLrrruuLDrdLLrddlU
+
+
+UCS
+TLE (100 seconds)!
+
+
+BFS
+TLE (100 seconds)!
+
+
+DFS
+TLE (100 seconds)!

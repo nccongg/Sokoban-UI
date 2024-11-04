@@ -1,3 +1,0 @@
-Breadth-First Search
-Steps: 97, Weight: 0, Node: 4101, Time (ms): 55.98, Memory (MB): 0.7204
-llDDDDDDldddrruuLuuuuuuurrdLulDDDDDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU

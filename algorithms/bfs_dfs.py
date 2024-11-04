@@ -177,39 +177,61 @@ def read_input_file(filename):
 
     return numbers, grid
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Usage: python Search.py <input_file> <algorithm>")
-        print("Algorithms: bfs, dfs")
-        sys.exit(1)
-        
-    _, level = read_input_file(sys.argv[1])
-    # Convert level to numpy array
+def solveDFS(input_file, output_file):
+    _, level = read_input_file(input_file)
     matrix = np.array(level)
-    algorithm = sys.argv[2]
-
-    # Start tracing memory allocations
-    tracemalloc.start()
-
-    # Solve the puzzle using the specified algorithm
-    start_time = time.time()
-    solution, depth, nodes_explored = solve_algorithm(matrix, algorithm)
-    end_time = time.time()
-
-    # Get memory usage
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-
-    with open('output.txt', 'w') as f:
-        if algorithm == 'bfs':
-            f.write('Breadth-First Search\n')
-        elif algorithm == 'dfs':
-            f.write('Depth-First Search\n')
-        else:
-            f.write(f'{algorithm} is not a valid algorithm.\n')
-            sys.exit(1)
+    solution, depth, nodes_explored = solve_algorithm(matrix, 'dfs')
+    with open(output_file, 'a') as f:
         if solution:
-            f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}, Time (ms): {(end_time - start_time) * 1000 :.2f}, Memory (MB): {peak / (1024 * 1024):.4f}\n')
+            f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}\n')
             f.write(f'{solution}\n')
         else:
             f.write("No solution found.\n")
+
+def solveBFS(input_file, output_file):
+    _, level = read_input_file(input_file)
+    matrix = np.array(level)
+    solution, depth, nodes_explored = solve_algorithm(matrix, 'bfs')
+    with open(output_file, 'a') as f:
+        if solution:
+            f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}\n')
+            f.write(f'{solution}\n')
+        else:
+            f.write("No solution found.\n")
+
+# if __name__ == '__main__':
+#     if len(sys.argv) != 3:
+#         print("Usage: python Search.py <input_file> <algorithm>")
+#         print("Algorithms: bfs, dfs")
+#         sys.exit(1)
+        
+#     _, level = read_input_file(sys.argv[1])
+#     # Convert level to numpy array
+#     matrix = np.array(level)
+#     algorithm = sys.argv[2]
+
+#     # Start tracing memory allocations
+#     tracemalloc.start()
+
+#     # Solve the puzzle using the specified algorithm
+#     start_time = time.time()
+#     solution, depth, nodes_explored = solve_algorithm(matrix, algorithm)
+#     end_time = time.time()
+
+#     # Get memory usage
+#     current, peak = tracemalloc.get_traced_memory()
+#     tracemalloc.stop()
+
+#     with open('output.txt', 'w') as f:
+#         if algorithm == 'bfs':
+#             f.write('Breadth-First Search\n')
+#         elif algorithm == 'dfs':
+#             f.write('Depth-First Search\n')
+#         else:
+#             f.write(f'{algorithm} is not a valid algorithm.\n')
+#             sys.exit(1)
+#         if solution:
+#             f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}, Time (ms): {(end_time - start_time) * 1000 :.2f}, Memory (MB): {peak / (1024 * 1024):.4f}\n')
+#             f.write(f'{solution}\n')
+#         else:
+#             f.write("No solution found.\n")

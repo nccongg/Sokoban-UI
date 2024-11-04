@@ -214,19 +214,13 @@ def read_input(filename):
 #         f.write(f"{solution}\n")
 
 def write_output(filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used,solution):
-    with open(filename, 'w') as f:
+    with open(filename, 'a') as f:
         f.write(f"{algorithm_name}\n")
         f.write(f"Steps: {steps}, Weight: {total_weight}, Node: {nodes_generated}, Time (ms): {time_taken:.2f}, Memory (MB): {memory_used:.2f}\n")
         f.write(f"{solution}\n")
 
 
-
-
-if __name__ == "__main__":
-
-    input_filename = 'algorithms/input.txt'
-    output_filename = 'algorithms/output.txt'
-
+def solveUCS(input_filename, output_filename):
     stone_weights, grid = read_input(input_filename)
 
     result  = ucs(grid, stone_weights)
@@ -236,5 +230,22 @@ if __name__ == "__main__":
         algorithm_name = "UCS"
         write_output(output_filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, solution )
     else:
-        with open(output_filename, 'w') as f:
-            f.write("No solution found.\n")
+        with open(output_filename, 'a') as f:
+            f.write("UCS\nNo solution found.\n")
+
+# if __name__ == "__main__":
+
+#     input_filename = 'algorithms/input.txt'
+#     output_filename = 'algorithms/output.txt'
+
+#     stone_weights, grid = read_input(input_filename)
+
+#     result  = ucs(grid, stone_weights)
+
+#     if result:
+#         steps, total_weight, nodes_generated, time_taken, memory_used, solution  = result
+#         algorithm_name = "UCS"
+#         write_output(output_filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, solution )
+#     else:
+#         with open(output_filename, 'w') as f:
+#             f.write("No solution found.\n")
