@@ -42,15 +42,15 @@ if __name__ == "__main__":
     
     # Clear the output file before appending
     open(output_file, 'w').close()
-    
-    print("Running A*...")
-    solve_with_timelimit(input_file, output_file, "A*", solveAstar, TL)
-
-    print("Running UCS...")
-    solve_with_timelimit(input_file, output_file, "UCS", solveUCS, TL)
-
+   
     print("Running BFS...")
     solve_with_timelimit(input_file, output_file, "BFS", solveBFS, TL)
 
     print("Running DFS...")
-    solve_with_timelimit(input_file, output_file, "DFS", solveDFS, TL)
+    solve_with_timelimit(input_file, output_file, "DFS", solveDFS, TL) 
+
+    print("Running UCS...")
+    solve_with_timelimit(input_file, output_file, "UCS", solveUCS, TL)
+    
+    print("Running A*...")
+    solve_with_timelimit(input_file, output_file, "A*", solveAstar, TL)

@@ -183,6 +183,7 @@ def solveDFS(input_file, output_file):
     solution, depth, nodes_explored = solve_algorithm(matrix, 'dfs')
     with open(output_file, 'a') as f:
         if solution:
+            f.write("DFS\n")
             f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}\n')
             f.write(f'{solution}\n')
         else:
@@ -194,6 +195,7 @@ def solveBFS(input_file, output_file):
     solution, depth, nodes_explored = solve_algorithm(matrix, 'bfs')
     with open(output_file, 'a') as f:
         if solution:
+            f.write("BFS\n")
             f.write(f'Steps: {depth}, Weight: 0, Node: {nodes_explored}\n')
             f.write(f'{solution}\n')
         else:
