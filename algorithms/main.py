@@ -45,18 +45,12 @@ if __name__ == "__main__":
     
     print("Running A*...")
     solve_with_timelimit(input_file, output_file, "A*", solveAstar, TL)
-    with open(output_file, 'a') as f:
-      f.write('\n\n')
-    
+
     print("Running UCS...")
     solve_with_timelimit(input_file, output_file, "UCS", solveUCS, TL)
-    with open(output_file, 'a') as f:
-      f.write('\n\n')
 
     print("Running BFS...")
     solve_with_timelimit(input_file, output_file, "BFS", solveBFS, TL)
-    with open(output_file, 'a') as f:
-      f.write('\n\n')
 
     print("Running DFS...")
     solve_with_timelimit(input_file, output_file, "DFS", solveDFS, TL)
