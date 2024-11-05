@@ -1,0 +1,11 @@
+BFS
+Steps: 97, Weight: 0, Node: 4101
+llDDDDDDldddrruuLuuuuuuurrdLulDDDDDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU
+DFS
+Steps: 173, Weight: 0, Node: 2960
+llDDDDDDlllddrrdrruuLrddlluUruLruuuuuurrdLulDDDDDDlddlluuRRllddrrdrruuLrddllulluurrDrUdrddllUUruLrUUddlddlluuRlddrrdrruuluuuUUddddLruuuuUluRddddddlddlluuRRllddrrdrruulUUUUUU
+UCS
+No solution found.
+A*
+Steps: 97, Weight: 656, Node: 1922, Time (ms): 16.35, Memory (MB): 417.77
+llDDDDDDldddrruuLuuuuuuurrdLulDDDDDDlllddrrUdlluurRdddrruuLUUUUUUluRdddddddrddlluUdlluurRdrUUUUUU
