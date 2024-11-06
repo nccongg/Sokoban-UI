@@ -32,3 +32,8 @@ class Button():
 		self.text_input = new_text
 		self.text = self.font.render(self.text_input, True, self.base_color)
 		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+	def changeImage(self, new_image):
+		"""Cập nhật hình ảnh của nút và tính toán lại vị trí."""
+		self.image = new_image
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))

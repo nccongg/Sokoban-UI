@@ -8,15 +8,15 @@ import pygame, sys, threading
 # Thêm thư mục gốc vào PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from components import Button
-
+from components import InfoButton
 ###
 
 ### Khởi tạo 
 
 pygame.init()
 screen_width, screen_height = 1280, 720
-FPS = 2  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
-cell_size = 40 # Kích thước của mỗi ô trong lưới
+FPS = 7  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
+cell_size = 45 # Kích thước của mỗi ô trong lưới
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ares Movement Simulation")
 
@@ -36,11 +36,25 @@ images = {
 for key in images:
     images[key] = pygame.transform.scale(images[key], (cell_size, cell_size))
 
+replay_button = pygame.image.load("img/replay_button.png")
+algorithms_button = pygame.image.load("img/algorithms_button.png")
+play_button = pygame.image.load("img/play_button.png")
+pause_button = pygame.image.load("img/pause_button.png")
+test_button = pygame.image.load("img/test_button.png")
+info_button = pygame.image.load("img/info_button.png")
+
+
+
+
 button_image = pygame.image.load("img/Play Rect.png")
 original_width, original_height = button_image.get_size()
 new_width = 150  # Thay đổi chiều rộng theo mong muốn
 resized_button_image = pygame.transform.scale(button_image, (new_width, original_height))
 resized_test_button_image = pygame.transform.scale(button_image, (75, original_height))
+resized_info_button_image = pygame.transform.scale(algorithms_button, (350, original_height*4))
+
+background = pygame.image.load("img/background.png")
+background_image = pygame.transform.scale(background,(1280, 720))
 ###
 
 
@@ -65,37 +79,54 @@ class Game:
         self.cell_size = cell_size
         self.ares_pos = self.find_ares_position()
         self.clock = pygame.time.Clock()
+        self.text_info = self.update_info(self.solution[0])
 
 
         # Khởi tạo nút
-        self.PLAY_BUTTON = Button(image=pygame.image.load("img/Play Rect.png"), pos=((screen_width) // 2, 650), 
-                                   text_input="Pause", font=get_font(30), 
+        self.PLAY_BUTTON = Button(image=pause_button, pos=((screen_width) // 2 + 85, 650), 
+                                   text_input="", font=get_font(30), 
                                    base_color="cyan", hovering_color="hotpink")
         self.buttons = [
-            Button(image=resized_button_image, pos=(100, 400),
-                text_input="BFS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
-            Button(image=resized_button_image, pos=(300, 400),
-                text_input="DFS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
-            Button(image=resized_button_image, pos=(100, 500),
-                text_input="UCS", font=get_font(30), base_color="cyan", hovering_color="hotpink"),
-            Button(image=resized_button_image, pos=(300, 500),
-                text_input="A*", font=get_font(30), base_color="cyan", hovering_color="hotpink")
+            Button(image=algorithms_button, pos=(100, 400),
+                text_input="BFS", font=get_font(30), base_color="black", hovering_color="hotpink"),
+            Button(image=algorithms_button, pos=(300, 400),
+                text_input="DFS", font=get_font(30), base_color="black", hovering_color="hotpink"),
+            Button(image=algorithms_button, pos=(100, 500),
+                text_input="UCS", font=get_font(30), base_color="black", hovering_color="hotpink"),
+            Button(image=algorithms_button, pos=(300, 500),
+                text_input="A*", font=get_font(30), base_color="black", hovering_color="hotpink")
             ]
         
         # Khởi tạo 10 nút test_button
         self.test_buttons = []
         for i in range(10):
-            pos_x = 1000 + (i % 2) * 100  # Cách đều 100 pixel ngang
-            pos_y = 100 + (i // 2) * 100  # Xuống hàng sau 2 nút
+            pos_x = 1100 + (i % 2) * 110  # Cách đều 100 pixel ngang
+            pos_y = 100 + (i // 2) * 130  # Xuống hàng sau 2 nút
             button = Button(
-                image=resized_test_button_image,
+                image=test_button,
                 pos=(pos_x, pos_y),
                 text_input=f"Test {i+1}",  # Đặt tên là Test 1, Test 2, ...
                 font=get_font(30),
-                base_color="cyan",
+                base_color="black",
                 hovering_color="hotpink"
             )
             self.test_buttons.append(button)
+
+        # Imformations
+        self.INFO_BUTTON = InfoButton(image=info_button, pos=(200, 200), 
+                                   text_input=self.text_info, font=get_font(25), 
+                                   base_color="black", hovering_color="black")
+        
+    def update_info(self, current_info):
+        text_info = [
+                f"Algorithm: {current_info['algorithm']}",
+                f"Steps: {current_info['steps']}",
+                f"Weight: {current_info['weight']}",
+                f"Node: {current_info['node']}",
+                f"Time (ms): {current_info['time_ms']}",
+                f"Memory (MB): {current_info['memory_mb']}"
+            ]
+        return text_info
 
 
     def handle_test_button_click(self, test_index):
@@ -103,19 +134,15 @@ class Game:
         if 0 <= test_index < len(self.solutions_list):
             self.solution = self.solutions_list[test_index]  # Lấy solution đầu tiên từ test tương ứng
             self.current_solution = self.solution[0]['solution']
-            self.init_grid = [list(row) for row in grids_list[test_index]]  
+            self.init_grid = [list(row) for row in grids_list[test_index]]
+            self.text_info = self.update_info(self.solution[0])
             self.reset_game()
 
     def reset_game(self):
-        # Khởi tạo lại trạng thái game với solution mới
-        # self.grid = [list(row) for row in self.init_grid]
         self.grid = copy.deepcopy(self.init_grid)
         self.ares_pos = self.find_ares_position()
         self.rows = len(self.grid)
         self.cols = max(len(row) for row in self.grid)
-        # for row in self.grid:
-        #     print(row)
-
     
         
     def find_ares_position(self):
@@ -133,14 +160,18 @@ class Game:
         for button in self.test_buttons:
             button.changeColor(mouse_pos)
             button.update(screen)
+        self.INFO_BUTTON.changeColor(mouse_pos)
+        self.INFO_BUTTON.changeText(self.text_info)
 
+        self.INFO_BUTTON.update(screen)
     def draw_grid(self):
-        screen.fill((0, 0, 0))  # Làm trắng màn hình
+        # screen.fill((255, 255, 255))  # Làm trắng màn hình
+        screen.blit(background_image, (0, 0))
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
         max_width = max(len(row) for row in self.grid)
-        start_x = (screen_width - max_width * self.cell_size) // 2  # Căn giữa theo chiều ngang
-        start_y = (screen_height - self.rows * self.cell_size) // 2  # Căn giữa theo chiều dọc
+        start_x = (screen_width - max_width * self.cell_size) // 2 + 85  # Căn giữa theo chiều ngang
+        start_y = (screen_height - self.rows * self.cell_size) // 2 - 50 # Căn giữa theo chiều dọc
         for r in range(self.rows):
             for c in range(max_width):
                 col = len(self.grid[r])
@@ -154,7 +185,7 @@ class Game:
                     if cell_value in images:
                         screen.blit(images[cell_value], (x, y))
         self.draw_buttons(screen, PLAY_MOUSE_POS)
-        self.PLAY_BUTTON.changeColor(PLAY_MOUSE_POS)
+        # self.PLAY_BUTTON.changeColor(PLAY_MOUSE_POS)
         self.PLAY_BUTTON.update(screen)
 
 
@@ -206,9 +237,9 @@ class Game:
                         else:
                             moving = (moving + 1) % 2
                         if moving == 1:
-                            self.PLAY_BUTTON.changeText("Pause")
+                            self.PLAY_BUTTON.changeImage(pause_button)
                         else:
-                            self.PLAY_BUTTON.changeText("Continue")
+                            self.PLAY_BUTTON.changeImage(play_button)
                     # Kiểm tra nút thuật toán
                     for i, button in enumerate(self.buttons):
                         if button.checkForInput(PLAY_MOUSE_POS):
@@ -217,7 +248,11 @@ class Game:
                             moving = 1  # Bắt đầu di chuyển
                             self.grid = copy.deepcopy(self.init_grid)
                             self.ares_pos = self.find_ares_position()   
-                            self.PLAY_BUTTON.changeText("Pause")
+                            self.PLAY_BUTTON.changeImage(pause_button)
+                            self.text_info = self.update_info(self.solution[i])
+                            print(self.text_info)
+
+                            # self.update_info(self.solution[i])
                             continue
                     # Kiểm tra nút test
                     for i, button in enumerate(self.test_buttons):
@@ -235,7 +270,7 @@ class Game:
                 self.clock.tick(FPS)  # Điều chỉnh tốc độ di chuyển
             else:
                 if(step == len(self.current_solution)):
-                    self.PLAY_BUTTON.changeText("Again")                  
+                    self.PLAY_BUTTON.changeImage(replay_button)                  
                 self.draw_grid()
                 pygame.display.flip()
                 self.clock.tick(FPS)
@@ -304,8 +339,6 @@ if __name__ == "__main__":
     num_tests = 2
     grids_list, solutions_list = load_test_cases(input_folder, output_folder, num_tests)
 
-    # print(solutions_list[0][0]['solution'])
     game = Game(grids_list, solutions_list)  # Bắt đầu với solution đầu tiên (ví dụ: BFS)
     game.run()
-    # print(solutions[0]['solution'])
  

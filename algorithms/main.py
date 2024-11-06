@@ -17,7 +17,7 @@ def timeout_handler(signum, frame):
     raise TimeoutError
 
 # Setting up the signal
-signal.signal(signal.SIGALRM, timeout_handler)
+signal.signal(signal.SIGABRT, timeout_handler)
 
 def solve_with_timelimit(input_file, output_file, algorithm_name, solve_function, time_limit=60):
     try:
