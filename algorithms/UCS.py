@@ -32,7 +32,7 @@ def create_successors(grid, grid_cost, steps):
             target_cell = grid[nx][ny]
             # Check for move to empty space or goal
             if target_cell in (' ', '.'):
-                new_grid = [row[:] for row in grid]
+                new_grid = [list(row) for row in grid]
                 new_grid[ares_pos[0]][ares_pos[1]] = ' ' if grid[ares_pos[0]][ares_pos[1]] == '@' else '.'
                 new_grid[nx][ny] = '@' if target_cell == ' ' else '+'
                 successors.append((new_grid, grid_cost, 0, steps + 1, move_action))
@@ -42,7 +42,7 @@ def create_successors(grid, grid_cost, steps):
                 if 0 <= box_nx < rows and 0 <= box_ny < len(grid[box_nx]):
                     box_target_cell = grid[box_nx][box_ny]
                     if box_target_cell in (' ', '.'):
-                        new_grid = [row[:] for row in grid]
+                        new_grid = [list(row) for row in grid]
                         new_grid_cost = [row[:] for row in grid_cost]
 
                         # Update positions
@@ -134,18 +134,18 @@ def solveUCS(input_filename, output_filename, csv_filename):
     stone_weights, grid = read_input(input_filename)
     result = ucs(grid, stone_weights)
     algorithm_name = "UCS"
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used', 'Solution Found', 'Date']
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used']
 
     if result:
         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
-        data = [algorithm_name, steps, total_weight, nodes_generated, f"{time_taken:.2f}", f"{memory_used:.4f}", 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, steps, total_weight, nodes_generated, f"{time_taken:.2f}", f"{memory_used:.4f}"]
     else:
-        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'No', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
 
     with open(output_filename, 'a') as f:
         if result:
             f.write("UCS\n")
-            f.write(f'Steps: {steps}, Weight: {total_weight}, Nodes: {nodes_generated}, Time Taken: {time_taken:.2f}, Memory Used: {memory_used:.4f}\n')
+            f.write(f'Steps: {steps}, Weight: {total_weight}, Node: {nodes_generated}, Time (ms): {time_taken:.2f}, Memory (MB): {memory_used:.4f}\n')           
             f.write(f'{solution}\n')
         else:
             f.write("UCS\nNo solution found.\n")
@@ -155,9 +155,9 @@ def solveUCS(input_filename, output_filename, csv_filename):
         if file.tell() == 0:
             csv_writer.writerow(fields)
         csv_writer.writerow(data)
-
+# import sys
 # if __name__ == "__main__":
 #     if len(sys.argv) != 3:
 #         print("Usage: python Search.py <input_file> <output_file>")
 #         sys.exit(1)
-#     solveUCS(sys.argv[1], sys.argv[2])
+#     solveUCS(sys.argv[1], sys.argv[2], "results.csv")

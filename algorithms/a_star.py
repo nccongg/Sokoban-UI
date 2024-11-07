@@ -73,7 +73,7 @@ def heuristic(state, switches, distance_grid):
 
     for stone_pos in stones:
         if stone_pos in distance_grid:
-            min_distance = distance_grid[stone_pos]
+            min_distance = distance_grid[stone_pos] * state['stones'][stone_pos]
             total_cost += min_distance
         else:
             # If stone cannot reach any switch, set heuristic to a very high value (infinite)
@@ -176,7 +176,7 @@ def a_star_search(initial_state, walls, switches, grid_width, grid_height, dista
                                 }
 
                                 if not is_deadlock(new_state, switches, walls, grid_width, grid_height):
-                                    h = heuristic(new_state, switches, distance_grid) #* weight
+                                    h = heuristic(new_state, switches, distance_grid)
                                     if h == float('inf'):
                                         continue  # Skip unsolvable states
                                     f = new_cost_so_far + h
@@ -260,20 +260,20 @@ def solveAstar(input_filename, output_filename, csv_filename):
     algorithm_name = "A*"
 
     # Initialize data to be written to CSV
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used', 'Solution Found', 'Date']
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used']
 
     if result:
         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
         # Write to the output file
         write_output(output_filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, solution)
         # Data for CSV
-        data = [algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used]
     else:
         # Write to the output file
         with open(output_filename, 'a') as f:
             f.write("A*\nNo solution found.\n")
         # Data for CSV
-        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'No', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
 
     # Append result to the CSV file
     with open(csv_filename, mode='a', newline='') as file:
@@ -284,12 +284,12 @@ def solveAstar(input_filename, output_filename, csv_filename):
 
 # if __name__ == "__main__":
 
-#     input_filename = './map/map/input-06.txt'
-#     output_filename = './map/solution/output-06.txt'
-#     if len(sys.argv) >= 2:
-#         input_filename = sys.argv[1]
-#     if len(sys.argv) >= 3:
-#         output_filename = sys.argv[2]
+#     input_filename = './map/map/input-10.txt'
+#     output_filename = './map/solution/output-10.txt'
+#     # if len(sys.argv) >= 2:
+#     #     input_filename = sys.argv[1]
+#     # if len(sys.argv) >= 3:
+#     #     output_filename = sys.argv[2]
 
 #     weights, grid = read_input(input_filename)
 #     result = solve_sokoban(weights, grid)

@@ -30,7 +30,7 @@ if __name__ == "__main__":
   results_csv = 'results.csv'
   TL = 500
 
-  for i in range(1, 11):
+  for i in range(1, 7):
     print(f"Running test case : {i}")
 
     input_file = input_root + "input-" + str(i).zfill(2) + '.txt'

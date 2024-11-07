@@ -218,17 +218,17 @@ def solveDFS(input_file, output_file, csv_file):
     weights, grid, box_ids, goals = read_input_file(input_file)
     solution, depth, nodes_explored, time_ms, memory, total_weight = solve_algorithm(grid, box_ids, goals, 'dfs')
     algorithm_name = "DFS"
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)', 'Solution Found', 'Date']
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)']
 
     if solution:
         data = [algorithm_name, depth, total_weight, nodes_explored, f"{time_ms:.2f}", f"{memory:.4f}", 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
     else:
-        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'No', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
 
     with open(output_file, 'a') as f:
         if solution:
             f.write("DFS\n")
-            f.write(f'Steps: {depth}, Weight: {total_weight}, Nodes: {nodes_explored}, Time (ms): {time_ms:.2f}, Memory (MB): {memory:.4f}\n')
+            f.write(f'Steps: {depth}, Weight: {total_weight}, Node: {nodes_explored}, Time (ms): {time_ms:.2f}, Memory (MB): {memory:.4f}\n')
             f.write(f'{solution}\n')
         else:
             f.write("DFS\nNo solution found.\n")
@@ -243,17 +243,17 @@ def solveBFS(input_file, output_file, csv_file):
     weights, grid, box_ids, goals = read_input_file(input_file)
     solution, depth, nodes_explored, time_ms, memory, total_weight = solve_algorithm(grid, box_ids, goals, 'bfs')
     algorithm_name = "BFS"
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)', 'Solution Found', 'Date']
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)']
 
     if solution:
-        data = [algorithm_name, depth, total_weight, nodes_explored, f"{time_ms:.2f}", f"{memory:.4f}", 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, depth, total_weight, nodes_explored, f"{time_ms:.2f}", f"{memory:.4f}"]
     else:
-        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'No', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
 
     with open(output_file, 'a') as f:
         if solution:
             f.write("BFS\n")
-            f.write(f'Steps: {depth}, Weight: {total_weight}, Nodes: {nodes_explored}, Time (ms): {time_ms:.2f}, Memory (MB): {memory:.4f}\n')
+            f.write(f'Steps: {depth}, Weight: {total_weight}, Node: {nodes_explored}, Time (ms): {time_ms:.2f}, Memory (MB): {memory:.4f}\n')
             f.write(f'{solution}\n')
         else:
             f.write("BFS\nNo solution found.\n")

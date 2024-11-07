@@ -1,2 +1,5 @@
 BFS
 TLE (500 seconds)!
+A*
+Steps: 60, Weight: 19, Node: 1235621, Time (ms): 55794.17, Memory (MB): 2089.52
+lUUlllluRRlluRRlluurDurDlDldRdrrrddrruLruLLLrrruuLDrdLLrddlU
