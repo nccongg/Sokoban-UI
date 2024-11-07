@@ -228,11 +228,8 @@ class Game:
         self.draw_buttons(screen, PLAY_MOUSE_POS)
         self.PLAY_BUTTON.update(screen)
 
-<<<<<<< HEAD
-=======
  
 
->>>>>>> refs/remotes/origin/main
     def move_ares(self, direction):
         """Di chuyển hoặc đẩy đá dựa trên hướng."""
         r, c = self.ares_pos
