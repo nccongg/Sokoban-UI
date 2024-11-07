@@ -336,7 +336,7 @@ if __name__ == "__main__":
 
     input_folder = "algorithms/map/map"
     output_folder = "algorithms/map/solution"
-    num_tests = 2
+    num_tests = 5
     grids_list, solutions_list = load_test_cases(input_folder, output_folder, num_tests)
 
     game = Game(grids_list, solutions_list)  # Bắt đầu với solution đầu tiên (ví dụ: BFS)

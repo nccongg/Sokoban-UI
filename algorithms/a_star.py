@@ -1,22 +1,24 @@
-import sys
 import time
 import heapq
 import psutil
 import os
-import json
-import numpy as np
+import csv
+from datetime import datetime
 
-def print_json(obj, indent=4):
-    def convert_to_serializable(o):
-        if isinstance(o, dict):
-            return {f"{k[0]},{k[1]}" if isinstance(k, tuple) else k: convert_to_serializable(v) for k, v in o.items()}
-        elif isinstance(o, list):
-            return [convert_to_serializable(i) for i in o]
-        else:
-            return o
 
-    serializable = convert_to_serializable(obj)
-    print(json.dumps(serializable, indent=indent))
+# import numpy as np
+
+# def print_json(obj, indent=4):
+#     def convert_to_serializable(o):
+#         if isinstance(o, dict):
+#             return {f"{k[0]},{k[1]}" if isinstance(k, tuple) else k: convert_to_serializable(v) for k, v in o.items()}
+#         elif isinstance(o, list):
+#             return [convert_to_serializable(i) for i in o]
+#         else:
+#             return o
+
+#     serializable = convert_to_serializable(obj)
+#     print(json.dumps(serializable, indent=indent))
 
 def read_input(filename):
     with open(filename, 'r') as f:
@@ -252,21 +254,38 @@ def solve_sokoban(weights, grid):
         return None
 
 
-def solveAstar(input_filename, output_filename):
+def solveAstar(input_filename, output_filename, csv_filename):
     weights, grid = read_input(input_filename)
     result = solve_sokoban(weights, grid)
+    algorithm_name = "A*"
+
+    # Initialize data to be written to CSV
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used', 'Solution Found', 'Date']
+
     if result:
         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
-        algorithm_name = "A*"
+        # Write to the output file
         write_output(output_filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, solution)
+        # Data for CSV
+        data = [algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
     else:
+        # Write to the output file
         with open(output_filename, 'a') as f:
             f.write("A*\nNo solution found.\n")
+        # Data for CSV
+        data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'No', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+
+    # Append result to the CSV file
+    with open(csv_filename, mode='a', newline='') as file:
+        csv_writer = csv.writer(file)
+        if file.tell() == 0:  # Write headers if file is empty
+            csv_writer.writerow(fields)
+        csv_writer.writerow(data)
 
 # if __name__ == "__main__":
 
-#     input_filename = 'input.txt'
-#     output_filename = 'output.txt'
+#     input_filename = './map/map/input-06.txt'
+#     output_filename = './map/solution/output-06.txt'
 #     if len(sys.argv) >= 2:
 #         input_filename = sys.argv[1]
 #     if len(sys.argv) >= 3:
