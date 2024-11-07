@@ -15,7 +15,7 @@ from components import InfoButton
 
 pygame.init()
 screen_width, screen_height = 1280, 720
-FPS = 5  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
+FPS = 4  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
 cell_size = 45 # Kích thước của mỗi ô trong lưới
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ares Movement Simulation")
@@ -408,7 +408,7 @@ if __name__ == "__main__":
 
     input_folder = "algorithms/map/map"
     output_folder = "algorithms/map/solution"
-    num_tests = 6
+    num_tests = 10
     grids_list,stone_weights_list, solutions_list = load_test_cases(input_folder, output_folder, num_tests)
 
     # print(stone_weights_list[0], stone_weights_list[1])
