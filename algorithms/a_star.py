@@ -240,8 +240,7 @@ def solveAstar(input_filename, output_filename, csv_filename):
     algorithm_name = "A*"
 
     # Initialize data to be written to CSV
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used']
-
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)']
     if result:
         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
         # Write to the output file

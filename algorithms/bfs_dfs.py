@@ -219,7 +219,7 @@ def solveDFS(input_file, output_file, csv_file):
     fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)']
 
     if solution:
-        data = [algorithm_name, depth, total_weight, nodes_explored, f"{time_ms:.2f}", f"{memory:.4f}", 'Yes', datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
+        data = [algorithm_name, depth, total_weight, nodes_explored, f"{time_ms:.2f}", f"{memory:.4f}"]
     else:
         data = [algorithm_name, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
 

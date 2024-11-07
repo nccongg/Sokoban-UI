@@ -134,8 +134,7 @@ def solveUCS(input_filename, output_filename, csv_filename):
     stone_weights, grid = read_input(input_filename)
     result = ucs(grid, stone_weights)
     algorithm_name = "UCS"
-    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Generated', 'Time Taken', 'Memory Used']
-
+    fields = ['Algorithm', 'Steps', 'Total Weight', 'Nodes Explored', 'Time (ms)', 'Memory (MB)']
     if result:
         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
         data = [algorithm_name, steps, total_weight, nodes_generated, f"{time_taken:.2f}", f"{memory_used:.4f}"]
