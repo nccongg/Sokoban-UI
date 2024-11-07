@@ -2,24 +2,6 @@ from a_star import solveAstar
 from ucs import solveUCS
 from bfs_dfs import solveBFS, solveDFS
 
-# import signal
-
-# # Define a timeout handler
-# def timeout_handler(signum, frame):
-#     raise TimeoutError
-
-# # Setting up the signal
-# signal.signal(signal.SIGALRM, timeout_handler)
-
-# def solve_with_timelimit(input_file, output_file, algorithm_name, solve_function, time_limit=60):
-#     try:
-#         signal.alarm(time_limit)
-#         solve_function(input_file, output_file)
-#         signal.alarm(0)  # Disable the alarm
-#     except TimeoutError:
-#         with open(output_file, 'a') as f:
-#             f.write(f"{algorithm_name}\nTLE ({time_limit} seconds)!\n")
-
 def solve_with_timelimit(input_file, output_file, results_csv, algorithm_name, solve_function, time_limit=60):
     solve_function(input_file, output_file, results_csv)
 

@@ -4,8 +4,6 @@ import tracemalloc  # Import tracemalloc for memory tracking
 import csv
 from datetime import datetime
 
-# Utility Functions
-
 def get_state_string(grid):
     return ''.join(''.join(row) for row in grid)
 
@@ -263,11 +261,3 @@ def solveBFS(input_file, output_file, csv_file):
         if file.tell() == 0:
             csv_writer.writerow(fields)
         csv_writer.writerow(data)
-
-# if __name__ == '__main__':
-#     if len(sys.argv) != 3:
-#         print("Usage: python Search.py <input_file> <output_file>")
-#         sys.exit(1)
-        
-#     solveBFS(sys.argv[1], sys.argv[2])
-#     solveDFS(sys.argv[1], sys.argv[2])

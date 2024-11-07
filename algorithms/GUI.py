@@ -219,29 +219,6 @@ class Game:
         self.draw_buttons(screen, PLAY_MOUSE_POS)
         self.PLAY_BUTTON.update(screen)
 
-
-
-    
-
-    # def move_ares(self, direction):
-    #     """Di chuyển hoặc đẩy đá dựa trên hướng."""
-    #     r, c = self.ares_pos
-    #     dr, dc = {"u": -1, "d": 1, "l": 0, "r": 0}[direction.lower()], {"u": 0, "d": 0, "l": -1, "r": 1}[direction.lower()]
-    #     new_r, new_c = r + dr, c + dc
-
-    #     if direction.islower():  # Di chuyển thường
-    #         if self.grid[new_r][new_c] in [" ", "."]:
-    #             self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
-    #             self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == " " else "+"
-    #             self.ares_pos = (new_r, new_c)
-    #     elif direction.isupper():  # Đẩy đá
-    #         stone_r, stone_c = new_r + dr, new_c + dc
-    #         if self.grid[new_r][new_c] in ["$", "*"] and self.grid[stone_r][stone_c] in [" ", "."]:
-    #             self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
-    #             self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == "$" else "+"
-    #             self.grid[stone_r][stone_c] = "$" if self.grid[stone_r][stone_c] == " " else "*"
-    #             self.ares_pos = (new_r, new_c)  
-
     def move_ares(self, direction):
         """Di chuyển hoặc đẩy đá dựa trên hướng."""
         r, c = self.ares_pos

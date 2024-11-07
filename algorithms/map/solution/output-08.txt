@@ -10,6 +10,3 @@ dddrrrrrrRRRuruLulDDrdLLLLLLLLdlUUUddrrrrrrrrrurrdLLLdR
 A*
 Steps: 55, Weight: 1514, Node: 43061, Time (ms): 578.92, Memory (MB): 980.38
 dddrrrrrrRRRuruLulDDrdLLLLLLLLdlUUUddrrrrrrrrurrrdLLLdR
-UCS
-Steps: 55, Weight: 1514, Nodes: 115176, Time Taken: 2116.69, Memory Used: 163.0156
-dddrrrrrrRRRuruLulDDrdLLLLLLLLdlUUUddrrrrrrrrrurrdLLLdR

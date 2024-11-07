@@ -6,20 +6,6 @@ import csv
 from datetime import datetime
 
 
-# import numpy as np
-
-# def print_json(obj, indent=4):
-#     def convert_to_serializable(o):
-#         if isinstance(o, dict):
-#             return {f"{k[0]},{k[1]}" if isinstance(k, tuple) else k: convert_to_serializable(v) for k, v in o.items()}
-#         elif isinstance(o, list):
-#             return [convert_to_serializable(i) for i in o]
-#         else:
-#             return o
-
-#     serializable = convert_to_serializable(obj)
-#     print(json.dumps(serializable, indent=indent))
-
 def read_input(filename):
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -126,12 +112,6 @@ def a_star_search(initial_state, walls, switches, grid_width, grid_height, dista
         closed_set.add(current_state_key)
 
         nodes_generated += 1
-
-        # if(nodes_generated % 10000 == 0):
-        #     print(f"Nodes generated: {nodes_generated}")
-        #     print(f"Cost so far: {current_state['cost_so_far']}")
-        #     print(f"Total weight: {current_state['total_weight']}")
-        #     print()
 
         if is_goal_state(current_state, switches):
             end_time = time.time()
@@ -281,22 +261,3 @@ def solveAstar(input_filename, output_filename, csv_filename):
         if file.tell() == 0:  # Write headers if file is empty
             csv_writer.writerow(fields)
         csv_writer.writerow(data)
-
-# if __name__ == "__main__":
-
-#     input_filename = './map/map/input-10.txt'
-#     output_filename = './map/solution/output-10.txt'
-#     # if len(sys.argv) >= 2:
-#     #     input_filename = sys.argv[1]
-#     # if len(sys.argv) >= 3:
-#     #     output_filename = sys.argv[2]
-
-#     weights, grid = read_input(input_filename)
-#     result = solve_sokoban(weights, grid)
-#     if result:
-#         steps, total_weight, nodes_generated, time_taken, memory_used, solution = result
-#         algorithm_name = "A*"
-#         write_output(output_filename, algorithm_name, steps, total_weight, nodes_generated, time_taken, memory_used, solution)
-#     else:
-#         with open(output_filename, 'w') as f:
-#             f.write("No solution found.\n")

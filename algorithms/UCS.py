@@ -155,9 +155,3 @@ def solveUCS(input_filename, output_filename, csv_filename):
         if file.tell() == 0:
             csv_writer.writerow(fields)
         csv_writer.writerow(data)
-# import sys
-# if __name__ == "__main__":
-#     if len(sys.argv) != 3:
-#         print("Usage: python Search.py <input_file> <output_file>")
-#         sys.exit(1)
-#     solveUCS(sys.argv[1], sys.argv[2], "results.csv")
