@@ -15,7 +15,7 @@ from components import InfoButton
 
 pygame.init()
 screen_width, screen_height = 1280, 720
-FPS = 7  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
+FPS = 5  # Số lần cập nhật mỗi giây (điều chỉnh để tăng/giảm tốc độ di chuyển)
 cell_size = 45 # Kích thước của mỗi ô trong lưới
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Ares Movement Simulation")
@@ -66,8 +66,7 @@ background_image = pygame.transform.scale(background,(1280, 720))
 
 
 class Game:
-    def __init__(self, grids_list, grids_cost_list, solutions_list):
-        
+    def __init__(self, grids_list, grids_cost_list, solutions_list):       
         self.grids_list = grids_list
         self.solutions_list = solutions_list
         self.grids_cost_list = grids_cost_list
@@ -83,13 +82,14 @@ class Game:
         self.solution = solutions_list[0]
         self.current_solution = self.solution[0]['solution']
 
+        self.current_weight = 0
+        self.current_step = 0
         self.rows = len(self.grid)
         self.cols = max(len(row) for row in self.grid)
         self.cell_size = cell_size
         self.ares_pos = self.find_ares_position()
         self.clock = pygame.time.Clock()
-        self.text_info = self.update_info(self.solution[1])
-
+        self.text_info = self.update_info(self.solution[0])
 
         # Khởi tạo nút
         self.PLAY_BUTTON = Button(image=play_button, pos=((screen_width) // 2 + 85, 650), 
@@ -97,7 +97,7 @@ class Game:
                                    base_color="cyan", hovering_color="hotpink")
         self.buttons = [
             Button(image=algorithms_button, pos=(100, 400),
-                text_input="BFS", font=get_font(30), base_color=clicked_color, hovering_color="hotpink"),
+                text_input="BFS", font=get_font(30), base_color=base_color, hovering_color="hotpink"),
             Button(image=algorithms_button, pos=(300, 400),
                 text_input="DFS", font=get_font(30), base_color=base_color, hovering_color="hotpink"),
             Button(image=algorithms_button, pos=(100, 500),
@@ -127,10 +127,13 @@ class Game:
                                    base_color="black", hovering_color="black")
         
     def update_info(self, current_info):
+        # print(self.current_step)
+        # f"Steps: {current_info['steps']}",
+        # f"Weight: {current_info['weight']}",
         text_info = [
                 f"Algorithm: {current_info['algorithm']}",
-                f"Steps: {current_info['steps']}",
-                f"Weight: {current_info['weight']}",
+                f"Steps: {self.current_step}",
+                f"Weight: {self.current_weight}",
                 f"Node: {current_info['node']}",
                 f"Time (ms): {current_info['time_ms']}",
                 f"Memory (MB): {current_info['memory_mb']}"
@@ -144,9 +147,12 @@ class Game:
             self.solution = self.solutions_list[test_index]  # Lấy solution đầu tiên từ test tương ứng
             self.current_solution = self.solution[0]['solution']
             self.init_grid = [list(row) for row in grids_list[test_index]]
-            self.text_info = self.update_info(self.solution[0])
             self.init_grid_cost = [list(row) for row in self.grids_cost_list[test_index]]
             self.test_index = test_index
+            self.algorithms_index = 0
+            self.current_step = 0
+            self.current_weight = 0
+            self.text_info = self.update_info(self.solution[0])
             self.reset_game()
 
     def reset_game(self):
@@ -155,6 +161,9 @@ class Game:
         self.ares_pos = self.find_ares_position()
         self.rows = len(self.grid)
         self.cols = max(len(row) for row in self.grid)
+        # self.current_step = 0
+        # self.current_weight = 0
+        
     
         
     def find_ares_position(self):
@@ -219,35 +228,14 @@ class Game:
         self.draw_buttons(screen, PLAY_MOUSE_POS)
         self.PLAY_BUTTON.update(screen)
 
-
-
-    
-
-    # def move_ares(self, direction):
-    #     """Di chuyển hoặc đẩy đá dựa trên hướng."""
-    #     r, c = self.ares_pos
-    #     dr, dc = {"u": -1, "d": 1, "l": 0, "r": 0}[direction.lower()], {"u": 0, "d": 0, "l": -1, "r": 1}[direction.lower()]
-    #     new_r, new_c = r + dr, c + dc
-
-    #     if direction.islower():  # Di chuyển thường
-    #         if self.grid[new_r][new_c] in [" ", "."]:
-    #             self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
-    #             self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == " " else "+"
-    #             self.ares_pos = (new_r, new_c)
-    #     elif direction.isupper():  # Đẩy đá
-    #         stone_r, stone_c = new_r + dr, new_c + dc
-    #         if self.grid[new_r][new_c] in ["$", "*"] and self.grid[stone_r][stone_c] in [" ", "."]:
-    #             self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
-    #             self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == "$" else "+"
-    #             self.grid[stone_r][stone_c] = "$" if self.grid[stone_r][stone_c] == " " else "*"
-    #             self.ares_pos = (new_r, new_c)  
+ 
 
     def move_ares(self, direction):
         """Di chuyển hoặc đẩy đá dựa trên hướng."""
         r, c = self.ares_pos
         dr, dc = {"u": -1, "d": 1, "l": 0, "r": 0}[direction.lower()], {"u": 0, "d": 0, "l": -1, "r": 1}[direction.lower()]
         new_r, new_c = r + dr, c + dc
-
+        self.current_step += 1
         if direction.islower():  # Di chuyển thường
             if self.grid[new_r][new_c] in [" ", "."]:
                 self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
@@ -258,8 +246,7 @@ class Game:
             if self.grid[new_r][new_c] in ["$", "*"] and self.grid[stone_r][stone_c] in [" ", "."]:
                 # Lấy weight của hòn đá
                 weight = self.grid_cost[new_r][new_c]
-                # print(f"Weight of stone being pushed: {weight}")
-
+                self.current_weight += weight
                 self.grid[r][c] = " " if self.grid[r][c] == "@" else "."
                 self.grid[new_r][new_c] = "@" if self.grid[new_r][new_c] == "$" else "+"
                 self.grid[stone_r][stone_c] = "$" if self.grid[stone_r][stone_c] == " " else "*"
@@ -267,7 +254,7 @@ class Game:
                 self.grid_cost[new_r][new_c] = 0  # Đặt lại cost của ô cũ thành 0
                 self.ares_pos = (new_r, new_c)
 
-
+        self.text_info = self.update_info(self.solution[self.algorithms_index])
 
 
     
@@ -294,6 +281,8 @@ class Game:
                             self.grid = copy.deepcopy(self.init_grid)
                             self.grid_cost = copy.deepcopy(self.init_grid_cost)
                             self.ares_pos = self.find_ares_position()
+                            self.current_step = 0
+                            self.current_weight = 0
                         else:
                             moving = (moving + 1) % 2
                         if moving == 1:
@@ -308,11 +297,13 @@ class Game:
                             moving = 0  # Bắt đầu di chuyển
                             self.grid = copy.deepcopy(self.init_grid)
                             self.grid_cost = copy.deepcopy(self.init_grid_cost)
+                            self.algorithms_index = i
+                            self.current_step = 0
+                            self.current_weight = 0
                             self.ares_pos = self.find_ares_position()   
                             self.PLAY_BUTTON.changeImage(play_button)
                             self.text_info = self.update_info(self.solution[i])
-                            self.algorithms_index = i
-                            print(self.text_info)
+                            # print(self.text_info)
 
                             # self.update_info(self.solution[i])
                             continue
@@ -417,7 +408,7 @@ if __name__ == "__main__":
 
     input_folder = "algorithms/map/map"
     output_folder = "algorithms/map/solution"
-    num_tests = 2
+    num_tests = 6
     grids_list,stone_weights_list, solutions_list = load_test_cases(input_folder, output_folder, num_tests)
 
     # print(stone_weights_list[0], stone_weights_list[1])
